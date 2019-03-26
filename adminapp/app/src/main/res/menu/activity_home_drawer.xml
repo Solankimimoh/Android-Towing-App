@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_add_zonal"
+            android:icon="@drawable/icon_zonal"
+            android:title="Add Zonal" />
+        <item
+            android:id="@+id/nav_penlty_price"
+            android:icon="@drawable/icon_price"
+            android:title="Penlty Price" />
+        <item
+            android:id="@+id/nav_add_police"
+            android:icon="@drawable/icon_police"
+            android:title="Add Police" />
+        <item
+            android:id="@+id/nav_add_zonal_officer"
+            android:icon="@drawable/icon_zonal_officer"
+            android:title="Add Zonal Officer" />
+        <item
+            android:id="@+id/nav_logout"
+            android:icon="@drawable/icon_logout"
+            android:title="Logout" />
+    </group>
+
+
+
+</menu>

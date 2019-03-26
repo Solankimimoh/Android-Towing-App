@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingBottom="20dp"
+    tools:context=".AddZonalActivity">
+
+
+    <EditText
+        android:id="@+id/activity_add_zonal_officer_name_ed"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:hint="@string/police_name"
+        android:inputType="textPersonName" />
+
+    <EditText
+        android:id="@+id/activity_add_zonal_officer_email_ed"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:hint="@string/email"
+        android:inputType="textEmailAddress" />
+
+
+    <EditText
+        android:id="@+id/activity_add_zonal_officer_password_ed"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:hint="@string/password"
+        android:inputType="numberPassword" />
+
+
+    <EditText
+        android:id="@+id/activity_add_zonal_officer_mobile_ed"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:hint="@string/mobile"
+        android:inputType="numberDecimal" />
+
+    <EditText
+        android:id="@+id/activity_add_zonal_officer_id_ed"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:hint="@string/police_id" />
+
+    <Spinner
+        android:id="@+id/activity_add_zonal_officer_zonal_sp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:prompt="@string/zonal"
+        android:spinnerMode="dialog" />
+
+    <Button
+        android:id="@+id/activity_add_zonal_officer_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:text="@string/add" />
+
+</LinearLayout>

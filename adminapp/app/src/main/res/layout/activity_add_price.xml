@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".AddPriceActivity">
+
+
+    <TextView
+        android:id="@+id/activity_add_price_two_wheeler_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="20dp"
+        android:text="@string/two_wheeler"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Small" />
+
+    <EditText
+        android:id="@+id/activity_add_price_two_wheeler_ed"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:hint="@string/two_wheeler"
+        android:inputType="numberDecimal" />
+
+
+    <TextView
+        android:id="@+id/activity_add_price_four_wheeler_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="20dp"
+        android:text="@string/four_wheeler"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Small" />
+
+    <EditText
+        android:id="@+id/activity_add_price_four_wheeler_ed"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:hint="@string/four_wheeler"
+        android:inputType="numberDecimal" />
+
+    <Button
+        android:id="@+id/activity_add_price_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:text="@string/add" />
+
+
+</LinearLayout>
