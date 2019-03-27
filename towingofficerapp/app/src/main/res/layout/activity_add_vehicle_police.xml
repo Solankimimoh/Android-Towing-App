@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingBottom="20dp"
+    tools:context=".AddVehiclePoliceActivity">
+
+
+    <EditText
+        android:id="@+id/activity_add_vehicle_number_ed"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:hint="@string/number"
+        android:inputType="text" />
+
+    <EditText
+        android:id="@+id/activity_add_vehicle_towing_area_ed"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:hint="@string/towing_area"
+        android:inputType="text" />
+
+    <Spinner
+        android:id="@+id/activity_add_vehicle_zonal_sp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:prompt="@string/zonal"
+        android:spinnerMode="dialog" />
+
+    <Spinner
+        android:id="@+id/activity_add_vehicle_type_sp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:prompt="@string/vehicle_type"
+        android:entries="@array/vehicleType"
+        android:spinnerMode="dialog" />
+
+    <Button
+        android:id="@+id/activity_add_vehicle_choose_camera_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:text="@string/clickPic" />
+
+    <Button
+        android:id="@+id/activity_add_vehicle_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:text="@string/add" />
+
+
+</LinearLayout>
