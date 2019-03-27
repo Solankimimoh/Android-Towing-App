@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -36,7 +37,11 @@ import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Random;
 import java.util.UUID;
 
 public class AddVehiclePoliceActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener {
@@ -178,20 +183,58 @@ public class AddVehiclePoliceActivity extends AppCompatActivity implements View.
 
     }
 
-    private void insertInToDatabase(String toString) {
+    private void insertInToDatabase(String photoUrl) {
 
         final String vehicleNumber = vehicleNumberEd.getText().toString().trim();
         final String towingArea = towingAreaEd.getText().toString().trim();
 
-        if (vehicleNumber.isEmpty() || towingArea.isEmpty()) {
+        if (!vehicleNumber.isEmpty() || !towingArea.isEmpty()) {
+
+            Date date = Calendar.getInstance().getTime();
+            SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
+            SimpleDateFormat df1 = new SimpleDateFormat("hh:mm:ss a");
+            String formattedDate = df.format(date);
+            String formattedTime = df1.format(date);
+
+            final String uuid = firebaseAuth.getCurrentUser().getUid();
+
+            databaseReference
+                    .child(AppConfig.FIREBASE_DB_TOWING_VEHICLE)
+                    .push()
+                    .setValue(new AddVehicleModel(vehicleNumber, photoUrl,
+                                    towingArea, zonalPushKey, formattedDate, formattedTime
+                                    , random(), penltyPrice, uuid, false, false)
+                            , new DatabaseReference.CompletionListener() {
+                                @Override
+                                public void onComplete(@Nullable DatabaseError databaseError, @NonNull DatabaseReference databaseReference) {
+                                    if (databaseError != null) {
+                                        Toast.makeText(AddVehiclePoliceActivity.this, "Error " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        Toast.makeText(AddVehiclePoliceActivity.this, "Add Success", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            });
 
         } else {
-
+            Toast.makeText(this, "Please fill the details", Toast.LENGTH_SHORT).show();
         }
 
     }
 
+    public static String random() {
+        Random generator = new Random();
+        StringBuilder randomStringBuilder = new StringBuilder();
+        int randomLength = generator.nextInt(7);
+        char tempChar;
+        for (int i = 0; i < randomLength; i++) {
+            tempChar = (char) (generator.nextInt(96) + 32);
+            randomStringBuilder.append(tempChar);
+        }
+        return randomStringBuilder.toString();
+    }
+
     private void clickImage() {
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && ContextCompat.checkSelfPermission(this,
                 Manifest.permission.CAMERA)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -200,7 +243,6 @@ public class AddVehiclePoliceActivity extends AppCompatActivity implements View.
                     android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
             return;
         }
-
         Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         startActivityForResult(cameraIntent, CAMERA_REQUEST);
 
@@ -218,6 +260,7 @@ public class AddVehiclePoliceActivity extends AppCompatActivity implements View.
             if (photo != null) {
                 selectedFileIntent = getImageUri(getApplicationContext(), photo);
                 Log.e("TUMUM", selectedFileIntent + "");
+                clickImage.setText("Image Clicked Done");
             }
 
         } else {
@@ -239,7 +282,6 @@ public class AddVehiclePoliceActivity extends AppCompatActivity implements View.
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
         switch (parent.getId()) {
-
             case R.id.activity_add_vehicle_zonal_sp:
                 zonalPushKey = zonalModelArrayList.get(position).getPushKey();
                 break;

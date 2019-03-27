@@ -7,5 +7,6 @@ public class AppConfig {
     public static final String FIREBASE_DB_ZONAL_ADDRESS = "zonal";
     public static final String FIREBASE_DB_POLICE = "polices";
     public static final String FIREBASE_DB_ZONAL_OFFICER = "zonalofficer";
+    public static final String FIREBASE_DB_TOWING_VEHICLE = "towingvehicle";
 
 }

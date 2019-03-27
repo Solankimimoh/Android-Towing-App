@@ -7,19 +7,19 @@ public class ZonalOfficerModel {
     private String password;
     private String mobile;
     private String policeid;
-    private String pushKey;
+    private String zonalPushKey;
 
 
     public ZonalOfficerModel() {
     }
 
-    public ZonalOfficerModel(String name, String email, String password, String mobile, String policeid, String pushKey) {
+    public ZonalOfficerModel(String name, String email, String password, String mobile, String policeid, String zonalPushKey) {
         this.name = name;
         this.email = email;
         this.password = password;
         this.mobile = mobile;
         this.policeid = policeid;
-        this.pushKey = pushKey;
+        this.zonalPushKey = zonalPushKey;
     }
 
     public String getName() {
@@ -62,11 +62,11 @@ public class ZonalOfficerModel {
         this.policeid = policeid;
     }
 
-    public String getPushKey() {
-        return pushKey;
+    public String getZonalPushKey() {
+        return zonalPushKey;
     }
 
-    public void setPushKey(String pushKey) {
-        this.pushKey = pushKey;
+    public void setZonalPushKey(String zonalPushKey) {
+        this.zonalPushKey = zonalPushKey;
     }
 }

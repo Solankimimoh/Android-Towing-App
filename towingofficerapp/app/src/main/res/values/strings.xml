@@ -19,6 +19,12 @@
     <string name="vehicle_type">Select Vehicle Type</string>
     <string name="add">Add</string>
     <string name="clickPic">Click Pic</string>
+    <string name="date">Date</string>
+    <string name="time">Time</string>
+    <string name="unique_challan">Unique Challan</string>
+    <string name="fine_amount">Fine Amount</string>
+    <string name="status">Verify Status</string>
+    <string name="search">Search</string>
 
 
     <string-array name="vehicleType">
