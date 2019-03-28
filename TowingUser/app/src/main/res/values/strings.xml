@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">TowingUser</string>
+    <string name="vehiclenumber">Vehicle Number</string>
+    <string name="number">Number</string>
+    <string name="date">Date</string>
+    <string name="time">Time\\</string>
+    <string name="towing_area">Area</string>
+    <string name="unique_challan">Uniq Challan</string>
+    <string name="fine_amount">Fine Amount</string>
+    <string name="status">status</string>
+    <string name="zonalname">Zonal Officer</string>
+    <string name="zonaladdress">Zonal Address</string>
+</resources>
