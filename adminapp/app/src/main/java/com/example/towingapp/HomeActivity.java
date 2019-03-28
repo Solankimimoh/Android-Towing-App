@@ -1,5 +1,6 @@
 package com.example.towingapp;
 
+import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -17,6 +18,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.DatePicker;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -27,6 +29,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, ReceiveVehicleListAdminItemClickListener, SearchView.OnQueryTextListener {
@@ -38,6 +41,7 @@ public class HomeActivity extends AppCompatActivity
     private DatabaseReference databaseReference;
     private FirebaseAuth firebaseAuth;
     private RecyclerView recyclerView;
+    private String[] months = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
 
 
     @Override
@@ -56,8 +60,9 @@ public class HomeActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+
+                openDatePickerDialog();
+
             }
         });
 
@@ -142,6 +147,32 @@ public class HomeActivity extends AppCompatActivity
 
 
     }
+
+    private void openDatePickerDialog() {
+        final Calendar calendar = Calendar.getInstance();
+        final int mDay = calendar.get(Calendar.DAY_OF_MONTH);
+        final int mMonth = calendar.get(Calendar.MONTH);
+        final int mYear = calendar.get(Calendar.YEAR);
+
+        final DatePickerDialog datePickerDialog = new DatePickerDialog(HomeActivity.this, new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                final String selectedDate = dayOfMonth + "-" + months[month] + "-" + year;
+                Toast.makeText(HomeActivity.this, "" + selectedDate, Toast.LENGTH_SHORT).show();
+                ArrayList<ReceiveVehicleDetailsModel> receiveVehicleDetailsModels = new ArrayList<>();
+
+                for (int i = 0; i < receiveVehicleDetailsModelArrayList.size(); i++) {
+                    if (receiveVehicleDetailsModelArrayList.get(i).getDate().equals(selectedDate)) {
+                        receiveVehicleDetailsModels.add(receiveVehicleDetailsModelArrayList.get(i));
+                    }
+                }
+                receiveVehicleListAdminAdapter.updateList(receiveVehicleDetailsModels);
+            }
+        }, mYear, mMonth, mDay);
+
+        datePickerDialog.show();
+    }
+
 
     @Override
     public void onBackPressed() {
