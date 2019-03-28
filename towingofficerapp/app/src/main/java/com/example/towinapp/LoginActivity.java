@@ -103,7 +103,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                         if (dataSnapshot.hasChildren()) {
                                             Toast.makeText(LoginActivity.this, "Login Success", Toast.LENGTH_SHORT).show();
-                                            final Intent gotoHomeZonalOfficer = new Intent(LoginActivity.this, PoliceHomeActivity.class);
+                                            final Intent gotoHomeZonalOfficer = new Intent(LoginActivity.this, ZonalOfficerHomeActivity.class);
                                             startActivity(gotoHomeZonalOfficer);
                                         } else {
                                             Toast.makeText(LoginActivity.this, "Wrong Type Selected", Toast.LENGTH_SHORT).show();

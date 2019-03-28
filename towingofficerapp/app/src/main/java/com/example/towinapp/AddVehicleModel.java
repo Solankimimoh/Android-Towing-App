@@ -2,6 +2,9 @@ package com.example.towinapp;
 
 public class AddVehicleModel {
 
+
+    private String pushKey;
+
     private String vehicleNumber;
     private String photoUrl;
     private String towinArea;
@@ -16,6 +19,14 @@ public class AddVehicleModel {
 
 
     public AddVehicleModel() {
+    }
+
+    public String getPushKey() {
+        return pushKey;
+    }
+
+    public void setPushKey(String pushKey) {
+        this.pushKey = pushKey;
     }
 
     public AddVehicleModel(String vehicleNumber, String photoUrl, String towinArea, String towingZonePushKey, String date, String time, String uniqueChallan, String fineAmount, String policeUUID, boolean verifyVehicle, boolean receiveStatus) {

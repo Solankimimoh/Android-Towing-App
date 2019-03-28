@@ -1,21 +1,14 @@
 package com.example.towinapp;
 
-import android.content.Intent;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
-import android.view.View;
-import android.support.design.widget.NavigationView;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -27,8 +20,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
-public class PoliceHomeActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, TowingVehiclePoliceItemClickListener, SearchView.OnQueryTextListener {
+public class ReceiveVehicleListZonalOficerActivity extends AppCompatActivity implements TowingVehiclePoliceItemClickListener, SearchView.OnQueryTextListener {
 
 
     private ArrayList<AddVehicleModel> addVehicleModelArrayList;
@@ -37,50 +29,41 @@ public class PoliceHomeActivity extends AppCompatActivity
     private DatabaseReference databaseReference;
     private FirebaseAuth firebaseAuth;
     private RecyclerView recyclerView;
-
+    private ZonalOfficerModel zonalOfficerModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_police_home);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        setContentView(R.layout.activity_receive_vehicle_list_zonal_oficer);
 
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseDatabase = FirebaseDatabase.getInstance();
         databaseReference = firebaseDatabase.getReference();
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.add_vehicle);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                final Intent gotoAddNewVehicle = new Intent(PoliceHomeActivity.this, AddVehiclePoliceActivity.class);
-                startActivity(gotoAddNewVehicle);
-
-            }
-        });
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
-
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-
-
-        recyclerView = findViewById(R.id.activity_police_home_vehicle_list_rv);
+        recyclerView = findViewById(R.id.activity_receive_vehicle_list_zonal_officer_rv);
 
         addVehicleModelArrayList = new ArrayList<>();
-        towingVehicleListPoliceAdapter = new TowingVehicleListPoliceAdapter(PoliceHomeActivity.this, addVehicleModelArrayList, this);
+        towingVehicleListPoliceAdapter = new TowingVehicleListPoliceAdapter(ReceiveVehicleListZonalOficerActivity.this, addVehicleModelArrayList, this);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setAdapter(towingVehicleListPoliceAdapter);
         recyclerView.setLayoutManager(layoutManager);
 
 
         final String uuid = firebaseAuth.getCurrentUser().getUid();
+
+        databaseReference.child(AppConfig.FIREBASE_DB_ZONAL_OFFICER)
+                .child(uuid)
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        zonalOfficerModel = dataSnapshot.getValue(ZonalOfficerModel.class);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
 
         databaseReference.child(AppConfig.FIREBASE_DB_TOWING_VEHICLE)
                 .addValueEventListener(new ValueEventListener() {
@@ -89,8 +72,11 @@ public class PoliceHomeActivity extends AppCompatActivity
 
                         for (DataSnapshot towingVehicleSnapshot : dataSnapshot.getChildren()) {
                             AddVehicleModel addVehicleModel = towingVehicleSnapshot.getValue(AddVehicleModel.class);
-                            if (addVehicleModel.getPoliceUUID().equals(uuid)) {
-                                addVehicleModelArrayList.add(addVehicleModel);
+                            addVehicleModel.setPushKey(towingVehicleSnapshot.getKey());
+                            if (addVehicleModel.getTowingZonePushKey().equals(zonalOfficerModel.getZonalPushKey())) {
+                                if (addVehicleModel.isVerifyVehicle()) {
+                                    addVehicleModelArrayList.add(addVehicleModel);
+                                }
                             }
                         }
                         towingVehicleListPoliceAdapter.notifyDataSetChanged();
@@ -101,17 +87,11 @@ public class PoliceHomeActivity extends AppCompatActivity
 
                     }
                 });
+
+
+
     }
 
-    @Override
-    public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -140,13 +120,13 @@ public class PoliceHomeActivity extends AppCompatActivity
             MenuItem.OnActionExpandListener onActionExpandListener = new MenuItem.OnActionExpandListener() {
                 @Override
                 public boolean onMenuItemActionExpand(MenuItem menuItem) {
-                    Toast.makeText(PoliceHomeActivity.this, "Action View Expanded", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ReceiveVehicleListZonalOficerActivity.this, "Action View Expanded", Toast.LENGTH_SHORT).show();
                     return true;
                 }
 
                 @Override
                 public boolean onMenuItemActionCollapse(MenuItem menuItem) {
-                    Toast.makeText(PoliceHomeActivity.this, "Action View Collapsed", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ReceiveVehicleListZonalOficerActivity.this, "Action View Collapsed", Toast.LENGTH_SHORT).show();
                     return true;
                 }
             };
@@ -156,28 +136,11 @@ public class PoliceHomeActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
-
-        if (id == R.id.nav_police_logout) {
-
-
-        }
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
-    }
-
 
     @Override
     public void onTowingVehiclePoliceItemClick(AddVehicleModel addVehicleModel, View v) {
 
     }
-
     @Override
     public boolean onQueryTextSubmit(String s) {
         return true;

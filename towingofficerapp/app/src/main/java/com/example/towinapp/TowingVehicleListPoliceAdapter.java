@@ -87,7 +87,7 @@ public class TowingVehicleListPoliceAdapter extends RecyclerView.Adapter<TowingV
         @Override
         public void onClick(View v) {
             if (towingVehiclePoliceItemClickListener != null) {
-                towingVehiclePoliceItemClickListener.onTowingVehiclePoliceItemClick(addVehicleModel);
+                towingVehiclePoliceItemClickListener.onTowingVehiclePoliceItemClick(addVehicleModel,v);
             }
         }
     }

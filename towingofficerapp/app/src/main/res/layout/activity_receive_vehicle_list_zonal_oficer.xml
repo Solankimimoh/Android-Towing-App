@@ -9,7 +9,7 @@
     tools:showIn="@layout/app_bar_police_home">
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/activity_zonal_officer_home_vehicle_list_rv"
+        android:id="@+id/activity_receive_vehicle_list_zonal_officer_rv"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
