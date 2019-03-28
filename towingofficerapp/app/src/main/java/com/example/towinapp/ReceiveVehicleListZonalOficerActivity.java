@@ -1,5 +1,6 @@
 package com.example.towinapp;
 
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -69,12 +70,12 @@ public class ReceiveVehicleListZonalOficerActivity extends AppCompatActivity imp
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
+                        addVehicleModelArrayList.clear();
                         for (DataSnapshot towingVehicleSnapshot : dataSnapshot.getChildren()) {
                             AddVehicleModel addVehicleModel = towingVehicleSnapshot.getValue(AddVehicleModel.class);
                             addVehicleModel.setPushKey(towingVehicleSnapshot.getKey());
                             if (addVehicleModel.getTowingZonePushKey().equals(zonalOfficerModel.getZonalPushKey())) {
-                                if (addVehicleModel.isVerifyVehicle()) {
+                                if (addVehicleModel.isVerifyVehicle() && !addVehicleModel.isReceiveStatus()) {
                                     addVehicleModelArrayList.add(addVehicleModel);
                                 }
                             }
@@ -87,7 +88,6 @@ public class ReceiveVehicleListZonalOficerActivity extends AppCompatActivity imp
 
                     }
                 });
-
 
 
     }
@@ -140,7 +140,16 @@ public class ReceiveVehicleListZonalOficerActivity extends AppCompatActivity imp
     @Override
     public void onTowingVehiclePoliceItemClick(AddVehicleModel addVehicleModel, View v) {
 
+
+        final Intent gotoReceiveVehicleDetailsUser = new Intent(ReceiveVehicleListZonalOficerActivity.this, ReceiveUserDetailsForVehicleActivity.class);
+        gotoReceiveVehicleDetailsUser.putExtra(AppConfig.FIREBASE_KEY_PENLTY_PRICE,
+                addVehicleModel.getFineAmount());
+        gotoReceiveVehicleDetailsUser.putExtra(AppConfig.FIREBASE_KEY_TOWING_VEHICLE_PUSH_KEY,
+                addVehicleModel.getPushKey());
+        startActivity(gotoReceiveVehicleDetailsUser);
+
     }
+
     @Override
     public boolean onQueryTextSubmit(String s) {
         return true;

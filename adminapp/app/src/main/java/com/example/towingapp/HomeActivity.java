@@ -2,8 +2,12 @@ package com.example.towingapp;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -13,9 +17,28 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
 
 public class HomeActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, ReceiveVehicleListAdminItemClickListener, SearchView.OnQueryTextListener {
+
+
+    private ArrayList<ReceiveVehicleDetailsModel> receiveVehicleDetailsModelArrayList;
+    private ReceiveVehicleListAdminAdapter receiveVehicleListAdminAdapter;
+    private FirebaseDatabase firebaseDatabase;
+    private DatabaseReference databaseReference;
+    private FirebaseAuth firebaseAuth;
+    private RecyclerView recyclerView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,6 +46,11 @@ public class HomeActivity extends AppCompatActivity
         setContentView(R.layout.activity_home);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        firebaseAuth = FirebaseAuth.getInstance();
+        firebaseDatabase = FirebaseDatabase.getInstance();
+        databaseReference = firebaseDatabase.getReference();
+
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -41,6 +69,78 @@ public class HomeActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+
+        recyclerView = findViewById(R.id.activity_home_receive_vehicle_list_rv);
+
+        receiveVehicleDetailsModelArrayList = new ArrayList<>();
+        receiveVehicleListAdminAdapter = new ReceiveVehicleListAdminAdapter(HomeActivity.this, receiveVehicleDetailsModelArrayList, this);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
+        recyclerView.setAdapter(receiveVehicleListAdminAdapter);
+        recyclerView.setLayoutManager(layoutManager);
+
+
+        databaseReference
+                .child(AppConfig.FIREBASE_DB_RECEIVE_VEHICLE)
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                        for (DataSnapshot receiveModels : dataSnapshot.getChildren()) {
+                            final ReceiveVehicleDetailsModel receiveVehicleDetailsModel = receiveModels.getValue(ReceiveVehicleDetailsModel.class);
+
+                            databaseReference
+                                    .child(AppConfig.FIREBASE_DB_TOWING_VEHICLE)
+                                    .child(receiveVehicleDetailsModel.getTowingVehiclePushKey())
+                                    .addValueEventListener(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                            AddVehicleModel addVehicleModel = dataSnapshot.getValue(AddVehicleModel.class);
+                                            receiveVehicleDetailsModel.setAddVehicleModel(addVehicleModel);
+                                            databaseReference
+                                                    .child(AppConfig.FIREBASE_DB_ZONAL_OFFICER)
+                                                    .child(receiveVehicleDetailsModel.getZonalOfficerUuid())
+                                                    .addValueEventListener(new ValueEventListener() {
+                                                        @Override
+                                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                                            ZonalOfficerModel zonalOfficerModel = dataSnapshot.getValue(ZonalOfficerModel.class);
+                                                            receiveVehicleDetailsModel.setZonalOfficerModel(zonalOfficerModel);
+
+                                                            Toast.makeText(HomeActivity.this, "" + receiveVehicleDetailsModel.getZonalOfficerModel().getName(), Toast.LENGTH_SHORT).show();
+                                                            receiveVehicleDetailsModelArrayList.add(receiveVehicleDetailsModel);
+                                                            receiveVehicleListAdminAdapter.notifyDataSetChanged();
+                                                        }
+
+                                                        @Override
+                                                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                                        }
+                                                    });
+                                            receiveVehicleListAdminAdapter.notifyDataSetChanged();
+
+
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                        }
+                                    });
+
+
+                        }
+
+                        receiveVehicleListAdminAdapter.notifyDataSetChanged();
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+
+
     }
 
     @Override
@@ -57,6 +157,11 @@ public class HomeActivity extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.home, menu);
+
+
+        MenuItem menuItem = menu.findItem(R.id.action_search);
+        SearchView searchView = (SearchView) menuItem.getActionView();
+        searchView.setOnQueryTextListener(this);
         return true;
     }
 
@@ -68,7 +173,21 @@ public class HomeActivity extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_search) {
+            MenuItem.OnActionExpandListener onActionExpandListener = new MenuItem.OnActionExpandListener() {
+                @Override
+                public boolean onMenuItemActionExpand(MenuItem menuItem) {
+                    Toast.makeText(HomeActivity.this, "Action View Expanded", Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+
+                @Override
+                public boolean onMenuItemActionCollapse(MenuItem menuItem) {
+                    Toast.makeText(HomeActivity.this, "Action View Collapsed", Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+            };
             return true;
         }
 
@@ -99,6 +218,30 @@ public class HomeActivity extends AppCompatActivity
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
+        return true;
+    }
+
+    @Override
+    public void onReceiveVehicleListAdminItemClick(ReceiveVehicleDetailsModel receiveVehicleDetailsModel, View v) {
+
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String s) {
+        return true;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String s) {
+        String usertext = s.toLowerCase();
+        ArrayList<ReceiveVehicleDetailsModel> searchArrayList = new ArrayList<>();
+
+        for (int i = 0; i < receiveVehicleDetailsModelArrayList.size(); i++) {
+            if (receiveVehicleDetailsModelArrayList.get(i).getAddVehicleModel().getVehicleNumber().toLowerCase().contains(usertext)) {
+                searchArrayList.add(receiveVehicleDetailsModelArrayList.get(i));
+            }
+        }
+        receiveVehicleListAdminAdapter.updateList(searchArrayList);
         return true;
     }
 }

@@ -25,6 +25,13 @@
     <string name="fine_amount">Fine Amount</string>
     <string name="status">Verify Status</string>
     <string name="search">Search</string>
+    <string name="document">Document</string>
+    <string name="person">Person</string>
+    <string name="name">Name</string>
+    <string name="mobile">Mobile</string>
+    <string name="address">Address</string>
+    <string name="extraamount">Extra Amount</string>
+    <string name="reasonAmount">Reason for extra amount</string>
 
 
     <string-array name="vehicleType">

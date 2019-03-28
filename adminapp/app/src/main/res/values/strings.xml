@@ -19,4 +19,14 @@
     <string name="mobile">Mobile</string>
     <string name="police_id">Police ID</string>
     <string name="zonal">Select Zonal</string>
+    <string name="name">Person Name</string>
+    <string name="address">Address</string>
+    <string name="extraAmount">Extra Amount</string>
+    <string name="extraAmountreason">Reason</string>
+    <string name="vehiclenumber">Vehicle Number</string>
+    <string name="towingarea">Towing Area</string>
+    <string name="zonalofficer">Zonal Officer</string>
+    <string name="totalamount">Total Amount</string>
+    <string name="date">Date</string>
+    <string name="search">Search</string>
 </resources>

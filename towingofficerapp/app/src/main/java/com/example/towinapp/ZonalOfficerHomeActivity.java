@@ -112,7 +112,7 @@ public class ZonalOfficerHomeActivity extends AppCompatActivity
                             AddVehicleModel addVehicleModel = towingVehicleSnapshot.getValue(AddVehicleModel.class);
                             addVehicleModel.setPushKey(towingVehicleSnapshot.getKey());
                             if (addVehicleModel.getTowingZonePushKey().equals(zonalOfficerModel.getZonalPushKey())) {
-                                if (!addVehicleModel.isVerifyVehicle()) {
+                                if (!addVehicleModel.isVerifyVehicle() && !addVehicleModel.isReceiveStatus()) {
                                     addVehicleModelArrayList.add(addVehicleModel);
                                 }
                             }

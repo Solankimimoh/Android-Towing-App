@@ -1,9 +1,91 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="15dp"
     tools:context=".ReceiveUserDetailsForVehicleActivity">
 
-</android.support.constraint.ConstraintLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="2">
+
+        <Button
+            android:id="@+id/activity_receive_user_details_for_vehicle_document_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/document" />
+
+        <Button
+            android:id="@+id/activity_receive_user_details_for_vehicle_person_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/person" />
+
+    </LinearLayout>
+
+    <EditText
+        android:id="@+id/activity_receive_user_details_for_vehicle_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/name"
+        android:inputType="textPersonName" />
+
+    <EditText
+        android:id="@+id/activity_receive_user_details_for_vehicle_mobile"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/mobile"
+        android:inputType="numberDecimal" />
+
+    <EditText
+        android:id="@+id/activity_receive_user_details_for_vehicle_email"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/email"
+        android:inputType="textEmailAddress" />
+
+    <EditText
+        android:id="@+id/activity_receive_user_details_for_vehicle_address"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/address" />
+
+    <EditText
+        android:id="@+id/activity_receive_user_details_for_vehicle_extra_amount"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/extraamount"
+        android:inputType="numberDecimal"
+        android:text="0" />
+
+    <EditText
+        android:id="@+id/activity_receive_user_details_for_vehicle_extra_amount_reason"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/reasonAmount"
+        android:inputType="text" />
+
+    <EditText
+        android:id="@+id/activity_receive_user_details_for_vehicle_total_amount"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:enabled="false"
+        android:hint="@string/reasonAmount"
+        android:inputType="numberDecimal" />
+
+
+    <Button
+        android:id="@+id/activity_receive_user_details_for_vehicle_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/add" />
+
+
+</LinearLayout>
