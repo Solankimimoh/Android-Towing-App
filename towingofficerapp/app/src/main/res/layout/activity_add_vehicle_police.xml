@@ -13,6 +13,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
+        android:drawableStart="@drawable/vnumber"
+        android:drawablePadding="10dp"
         android:hint="@string/number"
         android:inputType="text" />
 
@@ -21,6 +23,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
+        android:drawableStart="@drawable/icon_zonal"
+        android:drawablePadding="10dp"
         android:hint="@string/towing_area"
         android:inputType="text" />
 
@@ -37,8 +41,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
-        android:prompt="@string/vehicle_type"
         android:entries="@array/vehicleType"
+        android:prompt="@string/vehicle_type"
         android:spinnerMode="dialog" />
 
     <Button
@@ -46,14 +50,18 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
-        android:text="@string/clickPic" />
+        android:background="@color/colorPrimary"
+        android:text="@string/clickPic"
+        android:textColor="@color/colorWhite" />
 
     <Button
         android:id="@+id/activity_add_vehicle_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
-        android:text="@string/add" />
+        android:background="@color/colorPrimary"
+        android:text="@string/add"
+        android:textColor="@color/colorWhite" />
 
 
 </LinearLayout>

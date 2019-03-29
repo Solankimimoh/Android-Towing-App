@@ -23,6 +23,8 @@
         android:hint="@string/zonal_address" />
 
     <Button
+        android:textColor="@color/colorWhite"
+        android:background="@color/colorPrimary"
         android:id="@+id/activity_add_zonal_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

@@ -69,10 +69,10 @@ public class TowingVehicleListPoliceAdapter extends RecyclerView.Adapter<TowingV
             uniqueChallan.setText(data.getUniqueChallan());
             fineAmount.setText(data.getFineAmount());
             if (data.isVerifyVehicle()) {
-                verifyStatus.setText("APPROVED");
+                verifyStatus.setText("Reached the zone");
                 verifyStatus.setTextColor(Color.GREEN);
             } else {
-                verifyStatus.setText("DECLINE");
+                verifyStatus.setText("On the way to zone");
                 verifyStatus.setTextColor(Color.RED);
             }
 

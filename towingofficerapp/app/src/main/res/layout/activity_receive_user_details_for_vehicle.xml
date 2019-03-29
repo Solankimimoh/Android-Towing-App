@@ -85,7 +85,9 @@
         android:id="@+id/activity_receive_user_details_for_vehicle_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/add" />
+        android:background="@color/colorPrimary"
+        android:text="@string/add"
+        android:textColor="@color/colorWhite" />
 
 
 </LinearLayout>

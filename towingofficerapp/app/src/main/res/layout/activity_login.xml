@@ -22,6 +22,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
+            android:drawableStart="@drawable/icon_email"
+            android:drawablePadding="10dp"
             android:hint="@string/email"
             android:inputType="textEmailAddress" />
 
@@ -30,6 +32,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
+            android:drawableStart="@drawable/icon_password"
+            android:drawablePadding="10dp"
             android:hint="@string/password"
             android:inputType="textPassword" />
 
@@ -43,15 +47,15 @@
             <RadioButton
                 android:id="@+id/activity_login_type_police"
                 android:layout_width="wrap_content"
-                android:text="@string/police"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:text="@string/police" />
 
 
             <RadioButton
                 android:id="@+id/activity_login_type_zonal_officer"
                 android:layout_width="wrap_content"
-                android:text="@string/zonal_officer"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:text="@string/zonal_officer" />
 
 
         </RadioGroup>

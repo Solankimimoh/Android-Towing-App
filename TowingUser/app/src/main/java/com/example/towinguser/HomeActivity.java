@@ -104,10 +104,10 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                                     fineamount.setText(addVehicleModel.getFineAmount());
 
                                     if (addVehicleModel.isVerifyVehicle()) {
-                                        status.setText("ACCEPTED");
+                                        status.setText("Reached the zone");
                                         status.setTextColor(Color.GREEN);
                                     } else {
-                                        status.setText("Decline");
+                                        status.setText("On the way to zone");
                                         status.setTextColor(Color.RED);
                                     }
 

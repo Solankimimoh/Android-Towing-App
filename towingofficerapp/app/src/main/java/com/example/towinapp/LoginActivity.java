@@ -83,7 +83,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private void checkLogin(final String loginTypeString, String email, String password) {
 
         firebaseAuth
-                .signInWithEmailAndPassword(email, password).addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
+                .signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
 

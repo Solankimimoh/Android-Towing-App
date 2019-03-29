@@ -26,20 +26,20 @@
 
 
             <ImageView
-                android:padding="10dp"
                 android:id="@+id/row_layout_receive_vehicle_document"
                 android:layout_width="0dp"
                 android:layout_height="200dp"
                 android:layout_weight="1"
+                android:padding="10dp"
                 android:scaleType="center" />
 
             <ImageView
-                android:padding="10dp"
-
                 android:id="@+id/row_layout_receive_vehicle_person"
+
                 android:layout_width="0dp"
                 android:layout_height="200dp"
                 android:layout_weight="1"
+                android:padding="10dp"
                 android:scaleType="center" />
         </LinearLayout>
 
@@ -48,17 +48,20 @@
             android:id="@+id/row_layout_receive_vehicle_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:drawableStart="@drawable/icon_person"
+            android:drawablePadding="10dp"
             android:padding="10dp"
             android:text="@string/name"
             android:textAppearance="@style/TextAppearance.AppCompat.Headline"
             android:textColor="@color/colorAccent" />
 
 
-
         <TextView
             android:id="@+id/row_layout_receive_vehicle_email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:drawableStart="@drawable/icon_email"
+            android:drawablePadding="10dp"
             android:padding="10dp"
             android:text="@string/email"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
@@ -68,6 +71,8 @@
             android:id="@+id/row_layout_receive_vehicle_mobile"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:drawableStart="@drawable/icon_mobile"
+            android:drawablePadding="10dp"
             android:padding="10dp"
             android:text="@string/mobile"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
@@ -77,6 +82,8 @@
             android:id="@+id/row_layout_receive_vehicle_address"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:drawableStart="@drawable/icon_zonal"
+            android:drawablePadding="10dp"
             android:padding="10dp"
             android:text="@string/address"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
@@ -86,6 +93,8 @@
             android:id="@+id/row_layout_receive_vehicle_extra_amount"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:drawableStart="@drawable/icon_fine_amount"
+            android:drawablePadding="10dp"
             android:padding="10dp"
             android:text="@string/extraAmount"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
@@ -96,6 +105,8 @@
             android:id="@+id/row_layout_receive_vehicle_extra_amount_reason"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:drawableStart="@drawable/icon_reason"
+            android:drawablePadding="10dp"
             android:padding="10dp"
             android:text="@string/extraAmountreason"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
@@ -106,6 +117,8 @@
             android:id="@+id/row_layout_receive_vehicle_extra_amount_total_amount"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:drawableStart="@drawable/icon_fine_amount"
+            android:drawablePadding="10dp"
             android:padding="10dp"
             android:text="@string/totalamount"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
@@ -116,18 +129,20 @@
             android:id="@+id/row_layout_receive_vehicle_extra_amount_total_date"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:drawableStart="@drawable/icon_date"
+            android:drawablePadding="10dp"
             android:padding="10dp"
             android:text="@string/date"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
             android:textColor="@color/colorPrimary" />
 
 
-
-
         <TextView
             android:id="@+id/row_layout_receive_vehicle_number"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:drawableStart="@drawable/vnumber"
+            android:drawablePadding="10dp"
             android:padding="10dp"
             android:text="@string/vehiclenumber"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
