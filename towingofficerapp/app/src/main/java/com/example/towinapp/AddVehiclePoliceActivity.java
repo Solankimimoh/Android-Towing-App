@@ -211,6 +211,7 @@ public class AddVehiclePoliceActivity extends AppCompatActivity implements View.
                                         Toast.makeText(AddVehiclePoliceActivity.this, "Error " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
                                     } else {
                                         Toast.makeText(AddVehiclePoliceActivity.this, "Add Success", Toast.LENGTH_SHORT).show();
+                                        finish();
                                     }
                                 }
                             });
@@ -222,15 +223,28 @@ public class AddVehiclePoliceActivity extends AppCompatActivity implements View.
     }
 
     public static String random() {
-        Random generator = new Random();
-        StringBuilder randomStringBuilder = new StringBuilder();
-        int randomLength = generator.nextInt(7);
-        char tempChar;
-        for (int i = 0; i < randomLength; i++) {
-            tempChar = (char) (generator.nextInt(96) + 32);
-            randomStringBuilder.append(tempChar);
+        // chose a Character random from this String
+        String AlphaNumericString = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                + "0123456789"
+                + "abcdefghijklmnopqrstuvxyz";
+
+        // create StringBuffer size of AlphaNumericString
+        StringBuilder sb = new StringBuilder(7);
+
+        for (int i = 0; i < 7; i++) {
+
+            // generate a random number between
+            // 0 to AlphaNumericString variable length
+            int index
+                    = (int) (AlphaNumericString.length()
+                    * Math.random());
+
+            // add Character one by one in end of sb
+            sb.append(AlphaNumericString
+                    .charAt(index));
         }
-        return randomStringBuilder.toString();
+
+        return sb.toString();
     }
 
     private void clickImage() {

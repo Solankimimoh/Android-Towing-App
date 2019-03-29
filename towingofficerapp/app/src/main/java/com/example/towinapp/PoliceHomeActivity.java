@@ -164,7 +164,8 @@ public class PoliceHomeActivity extends AppCompatActivity
 
         if (id == R.id.nav_police_logout) {
 
-
+            firebaseAuth.signOut();
+            finish();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
