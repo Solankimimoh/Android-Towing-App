@@ -1,6 +1,7 @@
 package com.example.towinapp;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -28,6 +29,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
@@ -66,6 +68,8 @@ public class ReceiveUserDetailsForVehicleActivity extends AppCompatActivity impl
     private String documentPhotoUrl;
     private String personPhotoUrl;
 
+    private ProgressDialog progressDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,6 +80,8 @@ public class ReceiveUserDetailsForVehicleActivity extends AppCompatActivity impl
         databaseReference = firebaseDatabase.getReference();
         firebaseStorage = FirebaseStorage.getInstance();
         storageReference = firebaseStorage.getReference();
+
+        progressDialog = new ProgressDialog(ReceiveUserDetailsForVehicleActivity.this);
 
         intent = getIntent();
 
@@ -108,6 +114,23 @@ public class ReceiveUserDetailsForVehicleActivity extends AppCompatActivity impl
         chooseDocumentBtn.setOnClickListener(this);
         choosePersonBtn.setOnClickListener(this);
         addBtn.setOnClickListener(this);
+
+
+        extraAmountEd.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                String newAmount = totalAmountEd.getText().toString();
+
+                if (!hasFocus) {
+
+                    int totalAmount = Integer.parseInt(penltyPrice);
+                    totalAmount = totalAmount + Integer.parseInt(extraAmountEd.getText().toString());
+                    newAmount = String.valueOf(totalAmount);
+                    totalAmountEd.setText(newAmount + "");
+
+                }
+            }
+        });
     }
 
     @Override
@@ -122,14 +145,8 @@ public class ReceiveUserDetailsForVehicleActivity extends AppCompatActivity impl
 
     @Override
     public void afterTextChanged(Editable s) {
-        if (s.length() > 0) {
-            Toast.makeText(this, "GOOD" + s.toString(), Toast.LENGTH_SHORT).show();
-            int totalAmount = Integer.parseInt(totalAmountEd.getText().toString());
-            totalAmount = totalAmount + Integer.parseInt(s.toString());
-            totalAmountEd.setText(totalAmount + "");
-        } else {
-            totalAmountEd.setText(penltyPrice);
-
+        if (s.length() == 0) {
+            extraAmountEd.setText("0");
         }
     }
 
@@ -178,11 +195,19 @@ public class ReceiveUserDetailsForVehicleActivity extends AppCompatActivity impl
 
     private void uploadData() {
 
+
+        progressDialog.setTitle("Receive Vehicle");
+        progressDialog.setMessage("uploading image..");
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+
         final StorageReference sRefDocument = storageReference.child("images/" + UUID.randomUUID());
         final StorageReference sRefPerson = storageReference.child("images/" + UUID.randomUUID());
 
 
         if (clickDocumentUri == null || clickPersonUri == null) {
+            progressDialog.dismiss();
+
             Toast.makeText(this, "Please Click the photos", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -214,11 +239,17 @@ public class ReceiveUserDetailsForVehicleActivity extends AppCompatActivity impl
                                     }
                                 });
                             }
-                        });
+                        }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
+                progressDialog.setMessage("Uploading.. " + progress);
+            }
+        });
     }
 
     private void insertInToDatabase(String documentPhotoUrl, String personPhotoUrl) {
-
+        progressDialog.setMessage("data inseringg..");
         final String name = nameEd.getText().toString().trim();
         final String email = emailEd.getText().toString().trim();
         final String mobile = mobileEd.getText().toString().trim();
@@ -252,10 +283,10 @@ public class ReceiveUserDetailsForVehicleActivity extends AppCompatActivity impl
                         public void onComplete(@Nullable DatabaseError databaseError, @NonNull DatabaseReference databaseReference1) {
 
                             if (databaseError != null) {
+                                progressDialog.dismiss();
                                 Toast.makeText(ReceiveUserDetailsForVehicleActivity.this, "Error" + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
                             } else {
                                 Toast.makeText(ReceiveUserDetailsForVehicleActivity.this, "Success", Toast.LENGTH_SHORT).show();
-
                                 databaseReference
                                         .child(AppConfig.FIREBASE_DB_TOWING_VEHICLE)
                                         .child(pushKey)
@@ -265,8 +296,12 @@ public class ReceiveUserDetailsForVehicleActivity extends AppCompatActivity impl
                                             public void onComplete(@Nullable DatabaseError databaseError, @NonNull DatabaseReference databaseReference) {
 
                                                 if (databaseError != null) {
+                                                    progressDialog.dismiss();
+
                                                     Toast.makeText(ReceiveUserDetailsForVehicleActivity.this, "Error" + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
                                                 } else {
+                                                    progressDialog.dismiss();
+
                                                     Toast.makeText(ReceiveUserDetailsForVehicleActivity.this, "Success", Toast.LENGTH_SHORT).show();
                                                     finish();
                                                 }
@@ -285,7 +320,6 @@ public class ReceiveUserDetailsForVehicleActivity extends AppCompatActivity impl
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == CAMERA_REQUEST_DOCUMENT && resultCode == RESULT_OK) {
-            Toast.makeText(this, "HELLO", Toast.LENGTH_SHORT).show();
             //uploading the file
             Bitmap photo = (Bitmap) data.getExtras().get("data");
             // CALL THIS METHOD TO GET THE URI FROM THE BITMAP

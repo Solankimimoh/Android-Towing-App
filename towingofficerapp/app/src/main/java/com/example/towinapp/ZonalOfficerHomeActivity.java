@@ -11,6 +11,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -58,6 +59,7 @@ public class ZonalOfficerHomeActivity extends AppCompatActivity
         firebaseDatabase = FirebaseDatabase.getInstance();
         databaseReference = firebaseDatabase.getReference();
 
+        final String uuid = firebaseAuth.getCurrentUser().getUid();
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -87,14 +89,41 @@ public class ZonalOfficerHomeActivity extends AppCompatActivity
         recyclerView.setLayoutManager(layoutManager);
 
 
-        final String uuid = firebaseAuth.getCurrentUser().getUid();
-
-        databaseReference.child(AppConfig.FIREBASE_DB_ZONAL_OFFICER)
+        databaseReference
+                .child(AppConfig.FIREBASE_DB_ZONAL_OFFICER)
                 .child(uuid)
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         zonalOfficerModel = dataSnapshot.getValue(ZonalOfficerModel.class);
+                        Log.e("MOMO", dataSnapshot.getValue() + "");
+
+                        databaseReference.child(AppConfig.FIREBASE_DB_TOWING_VEHICLE)
+                                .addValueEventListener(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                        addVehicleModelArrayList.clear();
+                                        for (DataSnapshot towingVehicleSnapshot : dataSnapshot.getChildren()) {
+                                            AddVehicleModel addVehicleModel = towingVehicleSnapshot.getValue(AddVehicleModel.class);
+                                            addVehicleModel.setPushKey(towingVehicleSnapshot.getKey());
+
+                                            Log.e("YUYU", addVehicleModel.getVehicleNumber());
+                                            if (addVehicleModel.getTowingZonePushKey().equals(zonalOfficerModel.getZonalPushKey())) {
+                                                if (!addVehicleModel.isVerifyVehicle() && !addVehicleModel.isReceiveStatus()) {
+                                                    addVehicleModelArrayList.add(addVehicleModel);
+                                                }
+                                            }
+                                        }
+                                        towingVehicleListPoliceAdapter.notifyDataSetChanged();
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                    }
+                                });
+
+
                     }
 
                     @Override
@@ -102,30 +131,6 @@ public class ZonalOfficerHomeActivity extends AppCompatActivity
 
                     }
                 });
-
-        databaseReference.child(AppConfig.FIREBASE_DB_TOWING_VEHICLE)
-                .addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        addVehicleModelArrayList.clear();
-                        for (DataSnapshot towingVehicleSnapshot : dataSnapshot.getChildren()) {
-                            AddVehicleModel addVehicleModel = towingVehicleSnapshot.getValue(AddVehicleModel.class);
-                            addVehicleModel.setPushKey(towingVehicleSnapshot.getKey());
-                            if (addVehicleModel.getTowingZonePushKey().equals(zonalOfficerModel.getZonalPushKey())) {
-                                if (!addVehicleModel.isVerifyVehicle() && !addVehicleModel.isReceiveStatus()) {
-                                    addVehicleModelArrayList.add(addVehicleModel);
-                                }
-                            }
-                        }
-                        towingVehicleListPoliceAdapter.notifyDataSetChanged();
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                    }
-                });
-
 
     }
 

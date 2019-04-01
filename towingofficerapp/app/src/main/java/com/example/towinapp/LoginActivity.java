@@ -1,6 +1,8 @@
 package com.example.towinapp;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -43,6 +45,24 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         databaseReference = firebaseDatabase.getReference();
 
         initView();
+        SharedPreferences sharedpreferences;
+        sharedpreferences = getSharedPreferences("login.xml", Context.MODE_PRIVATE);
+
+        String type = sharedpreferences.getString("TYPE", "");
+
+        if (firebaseAuth.getCurrentUser() != null) {
+            if (type != null) {
+                if (type.equals("0")) {
+                    final Intent gotoPolice = new Intent(LoginActivity.this, PoliceHomeActivity.class);
+                    startActivity(gotoPolice);
+                    finish();
+                } else if (type.equals("1")) {
+                    final Intent gotoZonalOfficer = new Intent(LoginActivity.this, ZonalOfficerHomeActivity.class);
+                    startActivity(gotoZonalOfficer);
+                    finish();
+                }
+            }
+        }
     }
 
     private void initView() {
@@ -85,68 +105,77 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         firebaseAuth
                 .signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
 
-                if (!task.isSuccessful()) {
-                    Toast.makeText(LoginActivity.this, "Error " + task.getException(), Toast.LENGTH_SHORT).show();
-                } else {
+                        if (!task.isSuccessful()) {
+                            Toast.makeText(LoginActivity.this, "Error " + task.getException(), Toast.LENGTH_SHORT).show();
+                        } else {
 
-                    final String uuid = firebaseAuth.getCurrentUser().getUid();
+                            final String uuid = firebaseAuth.getCurrentUser().getUid();
 
-                    if (loginTypeString.equals(getString(R.string.zonal_officer))) {
+                            if (loginTypeString.equals(getString(R.string.zonal_officer))) {
 
-                        databaseReference
-                                .child(AppConfig.FIREBASE_DB_ZONAL_OFFICER)
-                                .child(uuid)
-                                .addValueEventListener(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                        if (dataSnapshot.hasChildren()) {
-                                            Toast.makeText(LoginActivity.this, "Login Success", Toast.LENGTH_SHORT).show();
-                                            final Intent gotoHomeZonalOfficer = new Intent(LoginActivity.this, ZonalOfficerHomeActivity.class);
-                                            startActivity(gotoHomeZonalOfficer);
-                                        } else {
-                                            Toast.makeText(LoginActivity.this, "Wrong Type Selected", Toast.LENGTH_SHORT).show();
-                                            firebaseAuth.signOut();
-                                        }
-                                    }
+                                databaseReference
+                                        .child(AppConfig.FIREBASE_DB_ZONAL_OFFICER)
+                                        .child(uuid)
+                                        .addValueEventListener(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                                if (dataSnapshot.hasChildren()) {
+                                                    Toast.makeText(LoginActivity.this, "Login Success", Toast.LENGTH_SHORT).show();
+                                                    SharedPreferences sharedpreferences;
+                                                    sharedpreferences = getSharedPreferences("login.xml", Context.MODE_PRIVATE);
+                                                    SharedPreferences.Editor editor = sharedpreferences.edit();
+                                                    editor.putString("TYPE", "1");
+                                                    editor.apply();
+                                                    final Intent gotoHomeZonalOfficer = new Intent(LoginActivity.this, ZonalOfficerHomeActivity.class);
+                                                    startActivity(gotoHomeZonalOfficer);
+                                                    finish();
+                                                } else {
+                                                    Toast.makeText(LoginActivity.this, "Wrong Type Selected", Toast.LENGTH_SHORT).show();
+                                                    firebaseAuth.signOut();
+                                                }
+                                            }
 
-                                    @Override
-                                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                                            @Override
+                                            public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                                    }
-                                });
+                                            }
+                                        });
 
-                    } else if (loginTypeString.equals(getString(R.string.police))) {
+                            } else if (loginTypeString.equals(getString(R.string.police))) {
 
-                        databaseReference
-                                .child(AppConfig.FIREBASE_DB_POLICE)
-                                .child(uuid)
-                                .addValueEventListener(new ValueEventListener() {
+                                databaseReference
+                                        .child(AppConfig.FIREBASE_DB_POLICE)
+                                        .child(uuid)
+                                        .addValueEventListener(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                                if (dataSnapshot.hasChildren()) {
+                                                    Toast.makeText(LoginActivity.this, "Login Success", Toast.LENGTH_SHORT).show();
+                                                    SharedPreferences sharedpreferences;
+                                                    sharedpreferences = getSharedPreferences("login.xml", Context.MODE_PRIVATE);
+                                                    SharedPreferences.Editor editor = sharedpreferences.edit();
+                                                    editor.putString("TYPE", "0");
+                                                    editor.apply();
+                                                    final Intent gotoHomeZonalOfficer = new Intent(LoginActivity.this, PoliceHomeActivity.class);
+                                                    startActivity(gotoHomeZonalOfficer);
+                                                    finish();
+                                                } else {
+                                                    Toast.makeText(LoginActivity.this, "Wrong Type Selected", Toast.LENGTH_SHORT).show();
+                                                    firebaseAuth.signOut();
+                                                }
+                                            }
+                                            @Override
+                                            public void onCancelled(@NonNull DatabaseError databaseError) {
+                                            }
+                                        });
 
-                                    @Override
-                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                        if (dataSnapshot.hasChildren()) {
-                                            Toast.makeText(LoginActivity.this, "Login Success", Toast.LENGTH_SHORT).show();
-                                            final Intent gotoHomeZonalOfficer = new Intent(LoginActivity.this, PoliceHomeActivity.class);
-                                            startActivity(gotoHomeZonalOfficer);
-                                        } else {
-                                            Toast.makeText(LoginActivity.this, "Wrong Type Selected", Toast.LENGTH_SHORT).show();
-                                            firebaseAuth.signOut();
-                                        }
-                                    }
-
-                                    @Override
-                                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                                    }
-                                });
-
+                            }
+                        }
                     }
-                }
-            }
-        });
+                });
 
     }
 

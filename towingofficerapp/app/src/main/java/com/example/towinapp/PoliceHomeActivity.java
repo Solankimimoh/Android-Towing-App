@@ -86,10 +86,11 @@ public class PoliceHomeActivity extends AppCompatActivity
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
+                        addVehicleModelArrayList.clear();
                         for (DataSnapshot towingVehicleSnapshot : dataSnapshot.getChildren()) {
                             AddVehicleModel addVehicleModel = towingVehicleSnapshot.getValue(AddVehicleModel.class);
                             if (addVehicleModel.getPoliceUUID().equals(uuid)) {
+                                Toast.makeText(PoliceHomeActivity.this, "" + addVehicleModel.getFineAmount(), Toast.LENGTH_SHORT).show();
                                 addVehicleModelArrayList.add(addVehicleModel);
                             }
                         }

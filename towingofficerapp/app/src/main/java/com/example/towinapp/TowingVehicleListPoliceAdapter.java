@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -68,6 +69,7 @@ public class TowingVehicleListPoliceAdapter extends RecyclerView.Adapter<TowingV
             towingArea.setText(data.getTowinArea());
             uniqueChallan.setText(data.getUniqueChallan());
             fineAmount.setText(data.getFineAmount());
+            Log.e("DATDATDA", data.getFineAmount());
             if (data.isVerifyVehicle()) {
                 verifyStatus.setText("Reached the zone");
                 verifyStatus.setTextColor(Color.GREEN);
@@ -87,7 +89,7 @@ public class TowingVehicleListPoliceAdapter extends RecyclerView.Adapter<TowingV
         @Override
         public void onClick(View v) {
             if (towingVehiclePoliceItemClickListener != null) {
-                towingVehiclePoliceItemClickListener.onTowingVehiclePoliceItemClick(addVehicleModel,v);
+                towingVehiclePoliceItemClickListener.onTowingVehiclePoliceItemClick(addVehicleModel, v);
             }
         }
     }

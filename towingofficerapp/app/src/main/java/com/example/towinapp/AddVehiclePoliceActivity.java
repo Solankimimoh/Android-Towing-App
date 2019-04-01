@@ -1,6 +1,7 @@
 package com.example.towinapp;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -32,6 +33,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
@@ -68,6 +70,7 @@ public class AddVehiclePoliceActivity extends AppCompatActivity implements View.
 
     private String zonalPushKey = "";
     private String penltyPrice = "";
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +80,7 @@ public class AddVehiclePoliceActivity extends AppCompatActivity implements View.
         firebaseDatabase = FirebaseDatabase.getInstance();
         databaseReference = firebaseDatabase.getReference();
         firebaseAuth = FirebaseAuth.getInstance();
+        progressDialog = new ProgressDialog(AddVehiclePoliceActivity.this);
 
         firebaseStorage = FirebaseStorage.getInstance();
         storageReference = firebaseStorage.getReference();
@@ -165,26 +169,41 @@ public class AddVehiclePoliceActivity extends AppCompatActivity implements View.
     }
 
     private void uploadData() {
+        progressDialog.setTitle("Add Vehicle");
+        progressDialog.setMessage("Image Uploading..");
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+        if (selectedFileIntent != null && !penltyPrice.equals("")) {
+            final StorageReference sRef = storageReference.child("images/" + UUID.randomUUID());
+            sRef.putFile(selectedFileIntent)
+                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            sRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                @Override
+                                public void onSuccess(Uri uri) {
+                                    insertInToDatabase(uri.toString());
+                                }
+                            });
+                        }
+                    }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                    double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
+                    progressDialog.setMessage("Uploading.. " + progress);
+                }
+            });
+        } else {
+            progressDialog.dismiss();
+            Toast.makeText(this, "Please click the picture", Toast.LENGTH_SHORT).show();
+        }
 
-        final StorageReference sRef = storageReference.child("images/" + UUID.randomUUID());
-
-        sRef.putFile(selectedFileIntent)
-                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        sRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                            @Override
-                            public void onSuccess(Uri uri) {
-                                insertInToDatabase(uri.toString());
-                            }
-                        });
-                    }
-                });
 
     }
 
     private void insertInToDatabase(String photoUrl) {
 
+        progressDialog.setMessage("Data inserting..");
         final String vehicleNumber = vehicleNumberEd.getText().toString().trim();
         final String towingArea = towingAreaEd.getText().toString().trim();
 
@@ -208,8 +227,10 @@ public class AddVehiclePoliceActivity extends AppCompatActivity implements View.
                                 @Override
                                 public void onComplete(@Nullable DatabaseError databaseError, @NonNull DatabaseReference databaseReference) {
                                     if (databaseError != null) {
+                                        progressDialog.dismiss();
                                         Toast.makeText(AddVehiclePoliceActivity.this, "Error " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
                                     } else {
+                                        progressDialog.dismiss();
                                         Toast.makeText(AddVehiclePoliceActivity.this, "Add Success", Toast.LENGTH_SHORT).show();
                                         finish();
                                     }
@@ -217,6 +238,7 @@ public class AddVehiclePoliceActivity extends AppCompatActivity implements View.
                             });
 
         } else {
+            progressDialog.dismiss();
             Toast.makeText(this, "Please fill the details", Toast.LENGTH_SHORT).show();
         }
 
@@ -266,7 +288,6 @@ public class AddVehiclePoliceActivity extends AppCompatActivity implements View.
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == CAMERA_REQUEST && resultCode == RESULT_OK) {
-            Toast.makeText(this, "HELLO", Toast.LENGTH_SHORT).show();
             //uploading the file
             Bitmap photo = (Bitmap) data.getExtras().get("data");
             // CALL THIS METHOD TO GET THE URI FROM THE BITMAP

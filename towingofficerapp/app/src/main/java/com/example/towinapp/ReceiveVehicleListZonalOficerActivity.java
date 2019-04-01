@@ -58,6 +58,29 @@ public class ReceiveVehicleListZonalOficerActivity extends AppCompatActivity imp
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         zonalOfficerModel = dataSnapshot.getValue(ZonalOfficerModel.class);
+                        databaseReference.child(AppConfig.FIREBASE_DB_TOWING_VEHICLE)
+                                .addValueEventListener(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                        addVehicleModelArrayList.clear();
+                                        for (DataSnapshot towingVehicleSnapshot : dataSnapshot.getChildren()) {
+                                            AddVehicleModel addVehicleModel = towingVehicleSnapshot.getValue(AddVehicleModel.class);
+                                            addVehicleModel.setPushKey(towingVehicleSnapshot.getKey());
+                                            if (addVehicleModel.getTowingZonePushKey().equals(zonalOfficerModel.getZonalPushKey())) {
+                                                if (addVehicleModel.isVerifyVehicle() && !addVehicleModel.isReceiveStatus()) {
+                                                    addVehicleModelArrayList.add(addVehicleModel);
+                                                }
+                                            }
+                                        }
+                                        towingVehicleListPoliceAdapter.notifyDataSetChanged();
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                    }
+                                });
+
                     }
 
                     @Override
@@ -66,28 +89,6 @@ public class ReceiveVehicleListZonalOficerActivity extends AppCompatActivity imp
                     }
                 });
 
-        databaseReference.child(AppConfig.FIREBASE_DB_TOWING_VEHICLE)
-                .addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        addVehicleModelArrayList.clear();
-                        for (DataSnapshot towingVehicleSnapshot : dataSnapshot.getChildren()) {
-                            AddVehicleModel addVehicleModel = towingVehicleSnapshot.getValue(AddVehicleModel.class);
-                            addVehicleModel.setPushKey(towingVehicleSnapshot.getKey());
-                            if (addVehicleModel.getTowingZonePushKey().equals(zonalOfficerModel.getZonalPushKey())) {
-                                if (addVehicleModel.isVerifyVehicle() && !addVehicleModel.isReceiveStatus()) {
-                                    addVehicleModelArrayList.add(addVehicleModel);
-                                }
-                            }
-                        }
-                        towingVehicleListPoliceAdapter.notifyDataSetChanged();
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                    }
-                });
 
 
     }

@@ -1,7 +1,9 @@
 package com.example.towingapp;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -30,7 +32,19 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         initView();
 
+        SharedPreferences sharedpreferences;
+        sharedpreferences = getSharedPreferences("login.xml", Context.MODE_PRIVATE);
 
+        String type = sharedpreferences.getString("TYPE", "");
+
+
+        if (type != null) {
+            if (type.equals("0")) {
+                final Intent gotoPatient = new Intent(LoginActivity.this, HomeActivity.class);
+                startActivity(gotoPatient);
+                finish();
+            }
+        }
     }
 
     private void initView() {
@@ -62,8 +76,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             Toast.makeText(this, "Please Enter details", Toast.LENGTH_SHORT).show();
         } else {
             if (email.equals("admin@gmail.com") && password.equals("admin")) {
+                SharedPreferences sharedpreferences;
+                sharedpreferences = getSharedPreferences("login.xml", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedpreferences.edit();
+                editor.putString("TYPE", "0");
+                editor.apply();
                 final Intent gotoHome = new Intent(LoginActivity.this, HomeActivity.class);
                 startActivity(gotoHome);
+                finish();
             } else {
                 Toast.makeText(this, "Credential Wrong", Toast.LENGTH_SHORT).show();
             }

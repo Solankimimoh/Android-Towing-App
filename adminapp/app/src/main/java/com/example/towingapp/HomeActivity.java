@@ -1,7 +1,9 @@
 package com.example.towingapp;
 
 import android.app.DatePickerDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -244,7 +246,12 @@ public class HomeActivity extends AppCompatActivity
             final Intent gotoZonalOfficer = new Intent(HomeActivity.this, AddZonalOfficerActivity.class);
             startActivity(gotoZonalOfficer);
         } else if (id == R.id.nav_logout) {
-
+            SharedPreferences sharedpreferences;
+            sharedpreferences = getSharedPreferences("login.xml", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedpreferences.edit();
+            editor.putString("TYPE", "1");
+            editor.apply();
+            finish();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -268,7 +275,8 @@ public class HomeActivity extends AppCompatActivity
         ArrayList<ReceiveVehicleDetailsModel> searchArrayList = new ArrayList<>();
 
         for (int i = 0; i < receiveVehicleDetailsModelArrayList.size(); i++) {
-            if (receiveVehicleDetailsModelArrayList.get(i).getAddVehicleModel().getVehicleNumber().toLowerCase().contains(usertext)) {
+            if (receiveVehicleDetailsModelArrayList.get(i).getAddVehicleModel().getVehicleNumber().toLowerCase().contains(usertext) ||
+            receiveVehicleDetailsModelArrayList.get(i).getZonalOfficerModel().getName().toLowerCase().contains(usertext)) {
                 searchArrayList.add(receiveVehicleDetailsModelArrayList.get(i));
             }
         }
