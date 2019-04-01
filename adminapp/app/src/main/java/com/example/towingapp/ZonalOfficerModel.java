@@ -8,7 +8,16 @@ public class ZonalOfficerModel {
     private String mobile;
     private String policeid;
     private String zonalPushKey;
+    private String uuid;
 
+
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
+    }
 
     public ZonalOfficerModel() {
     }

@@ -11,6 +11,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -30,6 +31,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -38,6 +40,7 @@ public class HomeActivity extends AppCompatActivity
 
 
     private ArrayList<ReceiveVehicleDetailsModel> receiveVehicleDetailsModelArrayList;
+    private ArrayList<ReceiveVehicleDetailsModel> countingReceiveVehicleDetailsModelArrayList;
     private ReceiveVehicleListAdminAdapter receiveVehicleListAdminAdapter;
     private FirebaseDatabase firebaseDatabase;
     private DatabaseReference databaseReference;
@@ -81,6 +84,8 @@ public class HomeActivity extends AppCompatActivity
         recyclerView = findViewById(R.id.activity_home_receive_vehicle_list_rv);
 
         receiveVehicleDetailsModelArrayList = new ArrayList<>();
+        countingReceiveVehicleDetailsModelArrayList = new ArrayList<>();
+
         receiveVehicleListAdminAdapter = new ReceiveVehicleListAdminAdapter(HomeActivity.this, receiveVehicleDetailsModelArrayList, this);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setAdapter(receiveVehicleListAdminAdapter);
@@ -95,6 +100,9 @@ public class HomeActivity extends AppCompatActivity
 
                         for (DataSnapshot receiveModels : dataSnapshot.getChildren()) {
                             final ReceiveVehicleDetailsModel receiveVehicleDetailsModel = receiveModels.getValue(ReceiveVehicleDetailsModel.class);
+
+                            Log.e("PUBB", receiveModels.getValue() + "");
+
 
                             databaseReference
                                     .child(AppConfig.FIREBASE_DB_TOWING_VEHICLE)
@@ -115,6 +123,7 @@ public class HomeActivity extends AppCompatActivity
 
                                                             Toast.makeText(HomeActivity.this, "" + receiveVehicleDetailsModel.getZonalOfficerModel().getName(), Toast.LENGTH_SHORT).show();
                                                             receiveVehicleDetailsModelArrayList.add(receiveVehicleDetailsModel);
+                                                            countingReceiveVehicleDetailsModelArrayList.add(receiveVehicleDetailsModel);
                                                             receiveVehicleListAdminAdapter.notifyDataSetChanged();
                                                         }
 
@@ -160,14 +169,19 @@ public class HomeActivity extends AppCompatActivity
             @Override
             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
                 final String selectedDate = dayOfMonth + "-" + months[month] + "-" + year;
-                Toast.makeText(HomeActivity.this, "" + selectedDate, Toast.LENGTH_SHORT).show();
                 ArrayList<ReceiveVehicleDetailsModel> receiveVehicleDetailsModels = new ArrayList<>();
 
+                String mDate = convertDate(convertToMillis(dayOfMonth, month, year));
+
+                Toast.makeText(HomeActivity.this, "" + mDate, Toast.LENGTH_SHORT).show();
+
                 for (int i = 0; i < receiveVehicleDetailsModelArrayList.size(); i++) {
-                    if (receiveVehicleDetailsModelArrayList.get(i).getDate().equals(selectedDate)) {
+                    if (receiveVehicleDetailsModelArrayList.get(i).getDate().equals(mDate)) {
                         receiveVehicleDetailsModels.add(receiveVehicleDetailsModelArrayList.get(i));
                     }
                 }
+                countingReceiveVehicleDetailsModelArrayList.clear();
+                countingReceiveVehicleDetailsModelArrayList.addAll(receiveVehicleDetailsModels);
                 receiveVehicleListAdminAdapter.updateList(receiveVehicleDetailsModels);
             }
         }, mYear, mMonth, mDay);
@@ -175,6 +189,18 @@ public class HomeActivity extends AppCompatActivity
         datePickerDialog.show();
     }
 
+    public String convertDate(long mTime) {
+        SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
+        return df.format(mTime);
+    }
+
+    public long convertToMillis(int day, int month, int year) {
+        Calendar calendarStart = Calendar.getInstance();
+        calendarStart.set(Calendar.YEAR, year);
+        calendarStart.set(Calendar.MONTH, month);
+        calendarStart.set(Calendar.DAY_OF_MONTH, day);
+        return calendarStart.getTimeInMillis();
+    }
 
     @Override
     public void onBackPressed() {
@@ -222,6 +248,18 @@ public class HomeActivity extends AppCompatActivity
                 }
             };
             return true;
+        } else if (id == R.id.action_vehicle_count) {
+            Toast.makeText(this, "" + countingReceiveVehicleDetailsModelArrayList.size(), Toast.LENGTH_LONG).show();
+        } else if (id == R.id.action_vehicle_amount) {
+
+            int totalAmount = 0;
+            for (int i = 0; i < countingReceiveVehicleDetailsModelArrayList.size(); i++) {
+                totalAmount = totalAmount + Integer.parseInt(countingReceiveVehicleDetailsModelArrayList.get(i).getTotalAmount());
+            }
+
+            Toast.makeText(this, "" + totalAmount, Toast.LENGTH_LONG).show();
+        } else if (id == R.id.action_vehicle_clear) {
+            receiveVehicleListAdminAdapter.updateList(receiveVehicleDetailsModelArrayList);
         }
 
         return super.onOptionsItemSelected(item);
@@ -245,6 +283,9 @@ public class HomeActivity extends AppCompatActivity
         } else if (id == R.id.nav_add_zonal_officer) {
             final Intent gotoZonalOfficer = new Intent(HomeActivity.this, AddZonalOfficerActivity.class);
             startActivity(gotoZonalOfficer);
+        } else if (id==R.id.nav_update_zonal_area) {
+            final Intent gotoupdateZonalOfficer = new Intent(HomeActivity.this, ZonalOfficerTransferActivity.class);
+            startActivity(gotoupdateZonalOfficer);
         } else if (id == R.id.nav_logout) {
             SharedPreferences sharedpreferences;
             sharedpreferences = getSharedPreferences("login.xml", Context.MODE_PRIVATE);
@@ -276,10 +317,12 @@ public class HomeActivity extends AppCompatActivity
 
         for (int i = 0; i < receiveVehicleDetailsModelArrayList.size(); i++) {
             if (receiveVehicleDetailsModelArrayList.get(i).getAddVehicleModel().getVehicleNumber().toLowerCase().contains(usertext) ||
-            receiveVehicleDetailsModelArrayList.get(i).getZonalOfficerModel().getName().toLowerCase().contains(usertext)) {
+                    receiveVehicleDetailsModelArrayList.get(i).getZonalOfficerModel().getName().toLowerCase().contains(usertext)) {
                 searchArrayList.add(receiveVehicleDetailsModelArrayList.get(i));
             }
         }
+        countingReceiveVehicleDetailsModelArrayList.clear();
+        countingReceiveVehicleDetailsModelArrayList.addAll(searchArrayList);
         receiveVehicleListAdminAdapter.updateList(searchArrayList);
         return true;
     }
