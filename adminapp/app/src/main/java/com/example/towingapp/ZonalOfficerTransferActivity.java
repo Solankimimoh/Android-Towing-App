@@ -137,11 +137,9 @@ public class ZonalOfficerTransferActivity extends AppCompatActivity implements V
         switch (parent.getId()) {
             case R.id.activity_zonal_officer_transfer_officer_sp:
                 zonalOfficerPushkey = zonalOfficerModelArrayList.get(position).getUuid();
-                Toast.makeText(this, "" + zonalOfficerPushkey, Toast.LENGTH_SHORT).show();
                 break;
             case R.id.activity_zonal_officer_transfer_location_sp:
                 zonalPushKey = zonalModelArrayList.get(position).getPushKey();
-                Toast.makeText(this, "" + zonalPushKey, Toast.LENGTH_SHORT).show();
                 break;
 
         }

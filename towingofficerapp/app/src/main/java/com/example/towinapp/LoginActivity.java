@@ -1,5 +1,6 @@
 package com.example.towinapp;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -35,6 +36,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private FirebaseAuth firebaseAuth;
     private DatabaseReference databaseReference;
     private FirebaseDatabase firebaseDatabase;
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +45,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseDatabase = FirebaseDatabase.getInstance();
         databaseReference = firebaseDatabase.getReference();
-
+        progressDialog = new ProgressDialog(LoginActivity.this);
         initView();
         SharedPreferences sharedpreferences;
         sharedpreferences = getSharedPreferences("login.xml", Context.MODE_PRIVATE);
@@ -89,12 +91,16 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     private void userLogin() {
 
+        progressDialog.setTitle("Authentication");
+        progressDialog.setMessage("Authentication.....");
         final String email = emailEd.getText().toString().trim();
         final String password = passwordEd.getText().toString().trim();
 
         if (loginTypeString.isEmpty() || email.isEmpty() || password.isEmpty()) {
+            progressDialog.dismiss();
             Toast.makeText(this, "Please Enter the details", Toast.LENGTH_SHORT).show();
         } else {
+            progressDialog.dismiss();
             checkLogin(loginTypeString, email, password);
         }
 
@@ -109,6 +115,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     public void onComplete(@NonNull Task<AuthResult> task) {
 
                         if (!task.isSuccessful()) {
+                            progressDialog.dismiss();
                             Toast.makeText(LoginActivity.this, "Error " + task.getException(), Toast.LENGTH_SHORT).show();
                         } else {
 
@@ -129,10 +136,15 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                                     SharedPreferences.Editor editor = sharedpreferences.edit();
                                                     editor.putString("TYPE", "1");
                                                     editor.apply();
+                                                    progressDialog.dismiss();
+
                                                     final Intent gotoHomeZonalOfficer = new Intent(LoginActivity.this, ZonalOfficerHomeActivity.class);
                                                     startActivity(gotoHomeZonalOfficer);
                                                     finish();
+
                                                 } else {
+
+                                                    progressDialog.dismiss();
                                                     Toast.makeText(LoginActivity.this, "Wrong Type Selected", Toast.LENGTH_SHORT).show();
                                                     firebaseAuth.signOut();
                                                 }
@@ -159,14 +171,17 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                                     SharedPreferences.Editor editor = sharedpreferences.edit();
                                                     editor.putString("TYPE", "0");
                                                     editor.apply();
+                                                    progressDialog.dismiss();
                                                     final Intent gotoHomeZonalOfficer = new Intent(LoginActivity.this, PoliceHomeActivity.class);
                                                     startActivity(gotoHomeZonalOfficer);
                                                     finish();
                                                 } else {
+                                                    progressDialog.dismiss();
                                                     Toast.makeText(LoginActivity.this, "Wrong Type Selected", Toast.LENGTH_SHORT).show();
                                                     firebaseAuth.signOut();
                                                 }
                                             }
+
                                             @Override
                                             public void onCancelled(@NonNull DatabaseError databaseError) {
                                             }
