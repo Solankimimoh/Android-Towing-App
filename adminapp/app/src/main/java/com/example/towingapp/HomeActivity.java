@@ -121,7 +121,6 @@ public class HomeActivity extends AppCompatActivity
                                                             ZonalOfficerModel zonalOfficerModel = dataSnapshot.getValue(ZonalOfficerModel.class);
                                                             receiveVehicleDetailsModel.setZonalOfficerModel(zonalOfficerModel);
 
-                                                            Toast.makeText(HomeActivity.this, "" + receiveVehicleDetailsModel.getZonalOfficerModel().getName(), Toast.LENGTH_SHORT).show();
                                                             receiveVehicleDetailsModelArrayList.add(receiveVehicleDetailsModel);
                                                             countingReceiveVehicleDetailsModelArrayList.add(receiveVehicleDetailsModel);
                                                             receiveVehicleListAdminAdapter.notifyDataSetChanged();
@@ -260,6 +259,7 @@ public class HomeActivity extends AppCompatActivity
             Toast.makeText(this, "" + totalAmount, Toast.LENGTH_LONG).show();
         } else if (id == R.id.action_vehicle_clear) {
             receiveVehicleListAdminAdapter.updateList(receiveVehicleDetailsModelArrayList);
+            countingReceiveVehicleDetailsModelArrayList.clear();
         }
 
         return super.onOptionsItemSelected(item);
@@ -283,7 +283,7 @@ public class HomeActivity extends AppCompatActivity
         } else if (id == R.id.nav_add_zonal_officer) {
             final Intent gotoZonalOfficer = new Intent(HomeActivity.this, AddZonalOfficerActivity.class);
             startActivity(gotoZonalOfficer);
-        } else if (id==R.id.nav_update_zonal_area) {
+        } else if (id == R.id.nav_update_zonal_area) {
             final Intent gotoupdateZonalOfficer = new Intent(HomeActivity.this, ZonalOfficerTransferActivity.class);
             startActivity(gotoupdateZonalOfficer);
         } else if (id == R.id.nav_logout) {
